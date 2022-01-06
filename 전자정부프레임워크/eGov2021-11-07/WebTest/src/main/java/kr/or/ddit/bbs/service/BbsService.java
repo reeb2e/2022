@@ -1,0 +1,15 @@
+package kr.or.ddit.bbs.service;
+
+import java.util.List;
+
+import egovframework.rte.fdl.cmmn.exception.EgovBizException;
+import kr.or.ddit.sample.service.SampleDefaultVO;
+
+public interface BbsService {
+
+	public String getTitle() throws EgovBizException;
+	
+	public String getName() throws Exception;
+	
+	public List getList(SampleDefaultVO searchVO) throws Exception;
+}
