@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+
+<script>
+
+    // //AJAX 기본틀 ==> 근본
+    // var ajax = new XMLHttpRequest();
+    // ajax.open("get", "data.txt", true);
+    // ajax.onreadystatechange = function() {
+    //     if(ajax.readyState == 4 && ajax.status == 200)
+    //     {
+    //         alert(ajax.responseText);
+    //     }
+    // }
+    // ajax.send();
+
+    var r2={};
+    r2.ajax = function(r_Set) {
+        var ajax = new XMLHttpRequest();
+        ajax.open(r_Set.method , r_Set.url, true);
+        ajax.onreadystatechange = function() {
+            if(ajax.readyState == 4 && ajax.status == 200)
+            {
+                r_Set.success(ajax.responseText)
+            }
+        }
+        ajax.send();
+    }
+
+    r2.ajax({
+        method: "get",
+        url: "data.txt",
+        success: function(r_result){
+            alert(r_result);
+        }
+    })
+
+</script>

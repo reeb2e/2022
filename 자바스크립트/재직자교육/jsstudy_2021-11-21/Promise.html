@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+
+
+<script>
+    let myFirstPromise = () => {
+        return new Promise((resolve, reject) => {
+            setTimeout(resolve("hello"), 10000);
+            //let error = new Error("에러 발생");
+            //reject(error);
+        })
+    }
+
+    myFirstPromise().then((result) => {
+        console.log(result);
+        alert(result);
+    })
+    .catch((error) => {
+        console.log(error.message);
+    })
+
+    function f_promise(second) {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve("happy, kitty");
+            }, second);
+        })
+    }
+
+    // async와 await는 콤비 ! await 기준 async가 따라다닌다.
+    // async 함수는 return 문에 속지 말고, return 타입이 무조건 Promise 임에 주의
+    async function f_await() {
+        const vs_result = await f_promise(2000);
+        alert(vs_result);
+
+        return "저도 블링크 팬"
+    }
+
+    f_await().then((response) => {
+        alert(response);
+    })
+
+</script>

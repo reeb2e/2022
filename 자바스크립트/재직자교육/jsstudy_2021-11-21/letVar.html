@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>없음</title>
+</head>
+<body>
+    <input type="button" class="clickAll" value="누르세요 1">
+    <input type="button" class="clickAll" value="누르세요 2">
+    <input type="button" class="clickAll" value="누르세요 3">
+    <input type="button" class="clickAll" value="누르세요 4">
+    <input type="button" class="clickAll" value="누르세요 5">
+</body>
+<script>
+
+    "use strict" // 엄격모드 적용 / 변수를 선언 하지 않고 사용하지 못하게 함
+    //v_babo = "이게 깔끔해서 좋아요"; // 변수 선언 없이 사용하는 나쁜 사람..
+
+    // const
+    // 일반적으로 전역 객체에 const를 많이 선언함, 상황에 맞게 사용.
+
+    const obj = {name:"로제", like:"좋아"};
+    obj.like = "너무 좋아";
+
+    // 고장난다. 새로운 객체를 할당하기 때문에
+    // obj = { name: "jenni" };
+
+    alert(obj.like);
+
+    // 기존 var 방식
+    var btns = document.querySelectorAll(".clickAll");
+    /* 문제 코드 : 어떤 번호를 눌러도 5번을 눌렀다는 alert 이 뜬다.
+    for(var i = 0; i < btns.length; i++) {
+        btns[i].addEventListener("click", function() {
+            alert(i + "번 눌렀어요.");
+        })
+    }
+    */
+   /* 해결 코드 / 기본적으로 원하는 변수 값이 안되면 별도 함수 처리 
+   function f_reg(item, val) {
+       item.addEventListener("click", function() {
+           alert(val + "번 눌렀어요.");
+       })
+   }
+   for (var i = 0; i < btns.length; i++) {
+       f_reg(btns[i], i);
+   }
+   */
+
+   // let 사용
+   // var는 function 스코프, let은 {} 스코프
+   // var에 짜증부리니, let이 나왔다.
+   for(let i=0; i<btns.length; i++) {
+       btns[i].addEventListener("click", function() {
+           alert(i + "번 눌렀어요");
+       })
+   }
+</script>
+</html>

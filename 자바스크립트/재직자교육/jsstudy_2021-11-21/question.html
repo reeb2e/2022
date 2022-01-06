@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>문제</title>
+</head>
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th>레벨</th>
+                <th>이름</th>
+            </tr>
+        </thead>
+        <tbody id="tbody">
+            
+        </tbody>
+    </table>
+</body>
+</html>
+<script>
+    var positionTable = {
+        grade4:"GOD",
+        grade2:"대표",
+        grade3:"PM",
+        grade1:"개발자"
+
+    }
+    var devList = [
+        {level:"grade1", name:"로제"},
+        {level:"grade2", name:"정국"},
+        {level:"grade3", name:"뷔"},
+        {level:"grade4", name:"슈가"},
+        {level:"grade2", name:"RM"},
+        {level:"grade3", name:"지민"},
+        {level:"grade4", name:"제니"},
+        {level:"grade1", name:"아유"},
+        {level:"grade2", name:"최준"},
+    ];  
+
+    var html = "";
+
+    for(let devInfo of devList)
+    {
+        var infoTr = "<tr>"+ "<td>" + devInfo.level + "</td>"+ "<td>" + devInfo.name + "</td>"+ "<td>" + positionTable[devInfo.level] + "</td>"+ "</tr>"
+        html = html + infoTr;
+    }
+
+    document.getElementById("tbody").innerHTML = html;
+
+</script>

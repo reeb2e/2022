@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+
+<body>
+        <input type="button" id="press" value="pressBtn">
+
+</body>
+
+<script>
+    //js에서 this는 어려워요? 그래서 존재합니다. call, apply, bind
+
+
+    var myprint = document.write.bind(document);
+
+    myprint("<h1>이거 되나용?</h1>");
+
+    function f_this(argu1, argu2) {
+        console.log(this, argu1, argu2); //? ==> window 객체를 리턴 
+    }
+
+    var obj = {na: "roze"};
+    f_this.bind(obj, "로제", "짱")(); 
+    
+    var btn = document.getElementById("press");
+    btn.onclick = f_this.bind(document.body, "hello", "roze");
+    //함수 호출이 아니고 함수 포인터가 필요할 때 사용
+
+    // bind 는 함수를 실행시키는 것이 아니라, 뒤에서 몰래 만들어 줌
+    // 보통 함수이름을 함수 포인터 (function pointer) 라고 하는데 그걸 만들어 준다.
+
+
+    //f_this.call(obj, "파라미터");
+    //f_this.call(document, "파라미터");
+
+    //f_this.apply(document, ["하하", "해피"]);
+
+    //f_this();
+
+    // var obj = {na: "roze"};
+    // obj.ff = f_this;
+    // obj.ff(); //? ==> 새로 선언한 객체 obj 를 리턴 / this 가 변했음..
+
+
+
+</script>

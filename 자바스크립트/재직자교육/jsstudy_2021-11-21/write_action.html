@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<script src="./jsp.js"></script>
+<script>
+
+    var title = request.getParameter("title");
+    var writer = request.getParameter("writer");
+    var skill = request.getParameter("skill");
+    var content = request.getParameter("content");
+
+    var boardInfo = {};
+
+    boardInfo.gid = 1; // Primary Key 대용
+    boardInfo.title = title;
+    boardInfo.writer = writer;
+    boardInfo.skill = skill;
+    boardInfo.content = content;
+
+    var board = []; // 게시글이 추가될 빈 배열 선언
+
+    if(localStorage.getItem("board"))
+    {
+        board = JSON.parse(localStorage.getItem("board"));
+        boardInfo.gid = board[board.length-1].gid + 1;
+    }
+    
+    board.push(boardInfo);
+
+    localStorage.setItem("board", JSON.stringify(board));
+
+    location.href = "list.html" //브라우저 캐시 허용 (요즘 너무 막강)
+    //location.replace("list.html"); 브라우저 캐시 허용 안함 (서버쪽 데이터 사용시 / 꼭 새로 데이터 가져와 할 경우)
+</script>

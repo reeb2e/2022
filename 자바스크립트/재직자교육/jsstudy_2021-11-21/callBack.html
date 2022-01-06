@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<script>
+
+    var MyArray = function() { // 흔히들 이런 함수를 생성자라 부름 ; 
+        this.length = 0;
+    }
+
+    //동적으로 생성된 객체가 공유하는 메서드 생성
+    MyArray.prototype.push = function(val) {
+        this[this.length] = val;
+        this.length++;
+    }
+
+    MyArray.prototype.foreach = function(cb) {
+        for(var i=0; i < this.length; i++) {
+            cb.call(this, i, this[i]);
+        }
+    }
+
+    var arr1 = new MyArray();
+
+    arr1.push('로제');
+    arr1.push('제니');
+    arr1.push('리사');
+
+    arr1.foreach(function(index, value) {
+        if(index == 1) {
+            alert("첫번째 값을 바꿀 거에요.");
+            this[index] = value + "차차차";
+        }
+    })
+
+    console.log(arr1);
+
+    //callback back(뒤-나중) 에서 call(불러 줌)
+
+    /*
+    var f_roze = function(f_cb) {
+        f_cb("roze", "zenni");
+    }
+
+    f_roze(function(arg1, arg2){
+        alert(arg1 + " " + arg2);
+    })
+    콜백 대표적 사용 법
+    */
+
+    // var array = ["로제", "제니", "리사"];
+
+    // function arrEach(arr, cb) {
+    //     for(var i = 0; i < arr.length; i++) {
+    //         cb(i, arr[i]);
+    //     }
+    // }
+
+    // arrEach(array, function(index, arrVal) {
+    //     if(arrVal == "리사") {
+    //         alert(arrVal + " 님 랩 짱.");
+    //     }
+    // })
+
+</script>

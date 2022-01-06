@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+
+<script>
+    //java ArraList의 add, remove, get, set 만들기
+
+    var ArrayList = function() {
+        this.length = 0; //생성시엔 갯수 없음.
+    }
+
+    ArrayList.prototype.add = function(val) {
+        this[this.length] = val;
+        this.length++;
+    }
+
+    ArrayList.prototype.remove = function(index) { //넘버링에 구멍이 생길 수 있음.
+        for (var i = 0; i < this.length; i++) {
+            if (i == index) {
+                delete this[i];
+            }
+        }
+    }
+
+    ArrayList.prototype.get = function(index) {
+        for (var i = 0; i < this.length; i++) {
+            if (i == index) {
+                return this[i];
+            }
+        }
+    }
+
+    var myArrayList = new ArrayList();
+
+    myArrayList.add("A");
+    myArrayList.add("B");
+    myArrayList.add("C");
+    myArrayList.add("D");
+    myArrayList.add("E");
+    console.log(myArrayList);
+
+    myArrayList.remove(3);
+
+    console.log(myArrayList);
+    console.log(myArrayList.get(0));
+</script>

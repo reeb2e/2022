@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<script>
+
+    //로컬스토리지 저장소
+    //브라우저 저장소인 것에 주의 chrome 기준 도메인당 5M
+    //오프라인 대응 목적으로 개발되었으나, 현재는 쿠키 대신 많이 사용 됨
+    //아주 주의 => 문자열만 저장, 객체 저장 안 됨
+
+    var jsonString = '{"name":"로제", "age":"24"}'; // JSON 파싱할 때 주의사항 / 꼭 바깥쪽 싱글 쿼테이션, 속성 (키 값)을 더블 쿼테이션으로 묶어야 함.
+    var obj =  JSON.parse(jsonString);
+    console.log(obj);
+
+    //일단 쓰기
+    localStorage.setItem("key", "value");
+    localStorage.setItem("key", "value, value, value"); // 같은 키에는 덮어쓴다.
+    localStorage.setItem("key2", "value, value");
+
+    var localData = localStorage.getItem("key");
+    var localData2 = localStorage.getItem("key2");
+    
+    var jsonParserData = {name:"로제", age:24};
+
+    localStorage.setItem("check", JSON.stringify(jsonParserData));
+
+
+    //localStorage.removeItem("key");
+    //localStorage.clear();
+
+
+
+</script>

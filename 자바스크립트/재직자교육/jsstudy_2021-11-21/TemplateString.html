@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+
+<script>
+    //문자열 더하기 편하게 하려고 나왔어요
+    // let name = "로제"
+    // let str = `안녕하세요 ${name} 님`;
+    // var str2 = "안녕하세요 " + name + " 님"; // 기존 방식
+
+    // alert(str);
+    // alert(str2);
+
+    //spread operator (전개 연산자)
+    var f_check = function(...parameter) {
+        alert(parameter.length + " 개가 넘어왔어요.");
+        for(var param of parameter) {
+            alert(param);
+        }
+    }
+
+    //f_check("로","제","님", "만", "만", "세", 1,2,3,4,5,6,7,8,9,0);
+
+    const obj = {name:"지수", age:25, alias: "찌수"}
+    let {name, age, alias} = obj;
+    alert(name);
+    alert(age);
+    alert(alias);
+
+</script>
+</body>
+</html>

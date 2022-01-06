@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <input type="button" id="btn1" value="눌러보세요.">
+</body>
+<script>
+
+    if("") { //동적 형변환 ( 자바스크립트 기본 소양 )
+        alert("안녕하세요.");
+    }
+    
+    var btn = document.querySelector("#btn1");
+
+    function f_click() {
+        alert("나 로제");
+    }
+
+    function f_click2() {
+        alert("난 제니")
+    }
+
+    // btn.onclick = f_click;
+    // btn.onclick = f_click2; // 함수가 덮어 씌워진다.
+
+    btn.addEventListener("click", f_click.bind(this, "안녕"));
+
+    // call, apply는 함수를 실행, bind 는 실행 시키지 않고 새로 만든 함수 포인터만 남긴다. 
+
+    btn.addEventListener("click", f_click2); // 이벤트 큐에 함수가 추가 된다.
+
+
+</script>
+</html>

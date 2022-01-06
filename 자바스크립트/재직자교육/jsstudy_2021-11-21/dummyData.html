@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<script>
+    var dummyList = [];
+    for(var i=1; i<100; i++){
+        var geul = {};
+        geul.gid = i;
+        geul.title = "로제만 좋아 " + i;
+        geul.writer = "글쓴이" + i;
+        geul.skill = ["java", "js"];
+        geul.content = "내용입니다." + i;
+
+        dummyList.push(geul);
+    }
+    localStorage.setItem("board", JSON.stringify(dummyList));
+</script>

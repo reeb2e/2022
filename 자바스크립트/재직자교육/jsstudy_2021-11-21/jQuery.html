@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<body>
+    
+    <input type="button" class="aaa" value="누르세요 1">
+    <input type="button" name="happy" value="누르세요 2">
+    <input type="button" value="누르세요 3">
+    <input type="button" class="aaa" value="누르세요 4">
+    <input type="button" value="누르세요 5">
+    <input type="button" name="happy" value="누르세요 6">
+    <input type="button" value="누르세요 7">
+    <input type="button" class="aaa" value="누르세요 8">
+    <input type="button" name="happy" value="누르세요 9">
+    <input type="button" value="누르세요 0">
+    <input type="button" class="aaa" value="해피">
+    <input type="button" value="누르세요 112">
+    <input type="button" name="happy" value="해피">
+
+</body>
+<script>
+    // mdn Mozila Devloper Network
+    // Stack Over Flow
+    // caniuse.com
+    // npmjs.com
+
+    // .html() / .attr() / .css() 자신의 손으로 만들기 ( 과제 )
+
+    // 즉각실행함수
+    // 굳이 function으로 만들 필요가 없을 때, 곧 연산을 1번만 하면 될 때, 메모리 절약
+    // 코드를 블록화하고 싶을 때, 중요코드를 영역화해서 의미를 명확히 한다.
+    (function(arg) {
+        alert(arg);
+    })("나의 로제");
+    // 아래 코드들과 동일하다. 앞에 기호를 추가해서 표현식으로 변경하는 것 뿐이다.
+    // +function(arg) {
+    //     alert(arg);
+    // }("나의 로제");
+    // -function(arg) {
+    //     alert(arg);
+    // }("나의 로제");
+    // ~function(arg) {
+    //     alert(arg);
+    // }("나의 로제");
+
+    //jQuery Core 흉내
+    (function () {
+        var $ = function(selector) {
+            return new mydom(selector);
+        }
+
+        var mydom = function(selector) {
+            var elements = document.querySelectorAll(selector);
+            this.prev = selector;   // 처음 선택자를 저장해 둠
+            this.length = elements.length;
+            for(var i = 0; i < elements.length; i++)
+            {
+                this[i] = elements[i]; // 옮겨담기
+            }
+            return this; // 명시적 표현 (없어도 됨)
+        }
+        window.$ = $; //전역변수를 이용해서 밖으로 꺼내기 / window는 최상위 객체라 윈도우의 속성으로 추가시키면 전역변수 역할을 할 수 있다.
+
+        $.fn=mydom.prototype; // mydom.prototype 을 밖으로 꺼내기 / prototype을 밖으로 꺼내야 사용자들이 자유롭게 플러그인을 만들어 쓸 수 있다.
+    })();
+    
+    $.fn.end = function() { //원래 처음 선택했던 선택자로 되돌리는 메서드
+        return $(this.prev);
+    }
+
+    // mydom.prototype을 전역으로 꺼냈기 때문에 자유롭게 메서드를 추가할 수 있게 되었다.
+    $.fn.eq = function(index) {
+        
+        this[0] = this[index];
+        for(var i = 1; i < this.length; i++){
+            delete this[i];
+        }
+        this.length = 1;
+        return this;
+    }
+
+    $.fn.each = function(cb) {
+        for(var i = 0; i < this.length; i++)
+        {
+            cb(i, this[i]); //callback 함수 호출
+        }
+        return this;
+    }
+
+    $.fn.val = (function(arg) {
+        console.log(typeof(arg))
+        if(!arg) {
+            return this[0].value;
+        }
+        if(typeof(arg) == "string") {
+            for(var i=0; i< this.length; i++) {
+                this[i].value = arg;
+            }
+            return this;
+        }
+        if(typeof(arg) == "function") {
+            for(var i = 0; i < this.length; i++) {
+               this[i].value = arg.call(this[i], i, this[i].value);
+            }
+            return this;
+        }
+    })
+
+    var retCheck = function() {
+        console.log("저 실행되었어요.");
+        return;
+        // 함수는 명시적으로 return 해 주지 않으면 return 이 자동으로 실행.
+    }
+
+    console.log($(".aaa").eq(1).eq(0).end().each(function(index, value){
+        console.log(value);
+    }));
+
+    // alert(retCheck()); // ? return 값이 없는 함수를 alert 창을 띄웠기 때문에 undefined 이 뜬다.
+
+    // $(".aaa").each(function(index, item){
+    //     console.log(item.value);
+    //     if(item.value ==  "해피")
+    //     {
+    //         item.value = "뭐다냥";
+    //     }
+    // }).each(function(index, value){
+    //     console.log(index);
+    //     console.log(value);
+    // }) // 메서드 체이닝
+ 
+    //console.log($(".aaa").val("고양이"));
+
+    $(".aaa").val(function(index, item) {
+        if(index == 0) {
+            return item + "안녕";
+        }
+        return item;
+
+    })
+
+    var btns = $(".aaa");
+    console.log(btns.eq(1));
+
+
+</script>
