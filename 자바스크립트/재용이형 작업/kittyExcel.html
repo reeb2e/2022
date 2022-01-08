@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>고양이 엑셀</title>
+            <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <!-- jQuery library -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <!-- Latest compiled JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.14.3/xlsx.full.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js"></script>
+        <style>
+        </style>
+    </head>
+    <body>
+        <div id="app">           
+            <input type="file" value="파일추가" v-on:change="exelAddData(event)">
+            
+            <table class="table table-striped table-bordered table-hover">
+                <thead>
+                    <tr>
+                       <th v-for="excelColumn in excelColumnList">
+                           {{excelColumn}}
+                       </th> 
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="excelRow in excelCngArray">
+                        <td v-for="excelCol in excelRow">
+                            {{excelCol}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.5.2/dist/vue.js"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script>
+            
+            var excelArray =  ['주문번호', '주문상태', '주문세부상태', '결제일', '상품명', '상품종류', '옵션정보', '수량', '상품별 총 주문금액', '배송비 형태', '배송비 유형', '배송비 합계', '제주/도서 추가배송비', '네이버페이 주문관리 수수료', '매출연동 수수료'];
+
+            var excelDataArray = [];
+            new Vue({
+                el: '#app',
+                data: {
+                    excelColumnList: excelArray,
+                    excelCngArray :[]
+                },
+                computed: { // 데이터의 변경을 감지하면 자동으로 로직을 실행함.
+                                 // 내장 API를 활용한 간단한 연산 정도에 적합
+                    reversedMessage: function() {
+                        return this.computedCheck.split('').reverse().join('');
+                    },
+                    exelAddData: function(event) {
+                        var input = event.target;
+                        var AddDataArray = []
+                        var reader = new FileReader();
+                        reader.onload = function(){
+                            var fileData = reader.result;
+                            var wb = XLSX.read(fileData, {type : 'binary'});
+                            wb.SheetNames.forEach(function(sheetName){
+                                var rowObj =XLSX.utils.sheet_to_json(wb.Sheets[sheetName]);
+                                var rowKey = Object.keys(rowObj);
+                                for (let index = 0; index < rowObj.length; index++) {
+                                    const element = rowObj[index];
+                                    var objKey = Object.keys(element);
+                                    var inputData = [];
+                                    
+                                        for (let index = 0; index < excelArray.length; index++) {
+                                            
+                                            if(!element[excelArray[index]]){
+                                                inputData.push(" ");
+                                            }else if(excelArray[index] == '결제일'){
+                                                inputData.push(excelSerialDateToJSDate(element['결제일']));
+                                            }
+                                            else{
+                                                inputData.push(element[excelArray[index]]);
+                                                
+                                            }
+                                        
+                                        }
+                                        AddDataArray.push(inputData);
+                                    }
+                            })
+                            
+                        };
+                        reader.readAsBinaryString(input.files[0]);
+                        return this.excelCngArray = AddDataArray;
+                    }
+
+                },
+                methods: { // 이벤트가 실행될 때만 작동함.
+                    reverseMsg: function() {
+                        this.message = this.message.split('').reverse().join('');
+                        this.computedCheck = '말정나구는뀌바';
+                    }
+                },
+                watch: { // 데이터의 변경을 감지하면 자동으로 로직을 실행함.
+                           // coumputed 와 비슷하지만 데이터 호출과 같이 시간이 상대적으로 더 많이 소모되는 비동기 처리에 적합.
+                    message: function(data) {
+                        alert("message의 값이 바뀝니다. : " + data);
+                    }
+                }
+            });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>고양이엑셀</title>
+  </head>
+  <body>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.14.3/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js"></script>
+    <div id="excelContainer">
+        <input type="file" name="uploadFile" onchange="excelExport(event)">
+        <input type="file" name="uploadFile" onchange="excelExport(event)">
+        <input type="file" name="uploadFile" onchange="excelExport(event)">
+        <button type="button" onclick="window.location.reload()">데이터 초기화</button>
+        <br>
+        <br>
+        <button type="button" name="downFile" id="excelDownBtn" onclick="exportExcel()">엑셀 다운로드</button>
+        <table id="excelTable" class="table table-striped table-bordered table-hover">
+            <thead id="columnHead">
+                
+            </thead>
+            <tbody id="dataBody">
+
+            </tbody>
+
+        </table>
+    </div>
+    <script>
+        var excelArray = [['주문번호', '주문상태', '주문세부상태', '결제일', '상품명', '상품종류', '옵션정보', '수량', '상품별 총 주문금액', '배송비 형태', '배송비 유형', '배송비 합계', '제주/도서 추가배송비', '네이버페이 주문관리 수수료', '매출연동 수수료']]
+
+        
+        $(function(){
+            var columnName = "";
+            $.each(excelArray[0], function(idx, val){
+                columnName = columnName + "<th>"+val+"</th>";
+            })
+            
+            $("#columnHead").append(columnName);
+        })
+        function excelExport(event){
+            var excelDataArray = [];
+            var input = event.target;
+            var reader = new FileReader();
+            reader.onload = function(){
+                var fileData = reader.result;
+                var wb = XLSX.read(fileData, {type : 'binary'});
+                wb.SheetNames.forEach(function(sheetName){
+                    var rowObj =XLSX.utils.sheet_to_json(wb.Sheets[sheetName]);
+                    var rowKey = Object.keys(rowObj);
+                    for (let index = 0; index < rowObj.length; index++) {
+                        const element = rowObj[index];
+                        var objKey = Object.keys(element);
+                        var inputData = [];
+                        var stringData = "<tr>";
+                            for (let index = 0; index < excelArray[0].length; index++) {
+                                var colOneData = "";
+
+                                if(!element[excelArray[0][index]]){
+                                    inputData.push(" ");
+                                    colOneData = "<td></td>"
+                                }else if(excelArray[0][index] == '결제일'){
+                                    var parseDate = new Date(excelSerialDateToJSDate(element['결제일']));
+                                    
+                                    var year = parseDate.getFullYear();
+                                    var month = zeroCodeAddTime(parseDate.getMonth() + 1);
+                                    var day = zeroCodeAddTime(parseDate.getDate());
+                                    var hour = zeroCodeAddTime(parseDate.getHours() + 3);
+                                    var minute = zeroCodeAddTime(parseDate.getMinutes());
+                                    var seconds = zeroCodeAddTime(parseDate.getSeconds());
+                                    
+                                    if(hour >= 24){
+                                        hour = zeroCodeAddTime(hour - 24);
+                                    }
+
+                                    var resultDate = year +"-"+ month +"-"+ day +" " + hour + ":" + minute + ":" + seconds
+
+                                    inputData.push(resultDate);
+                                    colOneData = "<td>" + resultDate + "</td>"
+                                }else if(excelArray[0][index] == '수량'){
+                                    colOneData = "<td class='quantity'>" + element[excelArray[0][index]] + "</td>";
+                                    inputData.push(element[excelArray[0][index]]);
+                                }else if(excelArray[0][index] == '상품별 총 주문금액'){
+                                    colOneData = "<td class='totalPrice'>" + element[excelArray[0][index]] + "</td>";
+                                    inputData.push(element[excelArray[0][index]]);
+                                }else if(excelArray[0][index] == '네이버페이 주문관리 수수료'){
+                                    colOneData = "<td class='naverpayFee'>" + element[excelArray[0][index]] + "</td>";
+                                    inputData.push(element[excelArray[0][index]]);
+                                }else if(excelArray[0][index] == '매출연동 수수료'){
+                                    colOneData = "<td class='salesProportionFee'>" + element[excelArray[0][index]] + "</td>";
+                                    inputData.push(element[excelArray[0][index]]);
+                                }
+                                else{
+                                    inputData.push(element[excelArray[0][index]]);
+                                    colOneData = "<td>" + element[excelArray[0][index]] + "</td>";
+                                }
+                                stringData = stringData + colOneData
+                            }
+                        stringData = stringData + "</tr>"
+                        excelDataArray.push(inputData);
+                        $("#dataBody").append(stringData);
+                    }
+                    excelArray = excelArray.concat(excelDataArray);
+                    console.log(excelArray);     
+                })
+                
+            };
+            reader.readAsBinaryString(input.files[0]);
+        }
+    
+    function sumData(){
+        var sumQuantity = 0;
+        var sumTotalPrice = 0;
+        var sumNaverpayFee = 0;
+        var sumSalesProportionFee = 0;
+
+        $(".quantity").each(function(idx, val){
+            sumQuantity = parseInt(val.innerText) + sumQuantity;
+        })
+        $(".totalPrice").each(function(idx, val){
+            sumTotalPrice = parseInt(val.innerText) + sumTotalPrice;
+        })
+        $(".naverpayFee").each(function(idx, val){
+            sumNaverpayFee = parseInt(val.innerText) + sumNaverpayFee;
+        })
+        $(".salesProportionFee").each(function(idx, val){
+            sumSalesProportionFee = parseInt(val.innerText) + sumSalesProportionFee;
+        })
+
+        var sumDatas = [];
+        for (let index = 0; index < excelArray[0].length; index++) {
+            if(excelArray[0][index] == '수량'){
+                sumDatas.push(sumQuantity);
+            }else if(excelArray[0][index] == '상품별 총 주문금액'){
+                sumDatas.push(sumTotalPrice);
+            }else if(excelArray[0][index] == '네이버페이 주문관리 수수료'){
+                sumDatas.push(sumNaverpayFee);
+            }else if(excelArray[0][index] == '매출연동 수수료'){
+                sumDatas.push(sumSalesProportionFee);
+            }
+            else{
+                sumDatas.push(" ");
+            }
+        }
+
+        excelArray.push(sumDatas);
+    }
+
+    function exportExcel(){ 
+        // step 1. workbook 생성
+        var wb = XLSX.utils.book_new();
+
+        // step 2. 시트 만들기 
+        var newWorksheet = excelHandler.getWorksheet();
+        
+        // step 3. workbook에 새로만든 워크시트에 이름을 주고 붙인다.  
+        XLSX.utils.book_append_sheet(wb, newWorksheet, excelHandler.getSheetName());
+
+        // step 4. 엑셀 파일 만들기 
+        var wbout = XLSX.write(wb, {bookType:'xlsx',  type: 'binary'});
+
+        // step 5. 엑셀 파일 내보내기 
+        saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), excelHandler.getExcelFileName());
+    }
+    var excelHandler = {
+            getExcelFileName : function(){
+                return '고양이 액셀파일.xlsx';
+            },
+            getSheetName : function(){
+                return '고양이 액셀 Sheet';
+            },
+            getExcelData : function(){
+                sumData();
+                return excelArray;
+            },
+            getWorksheet : function(){
+                return XLSX.utils.aoa_to_sheet(this.getExcelData());
+            }
+    }
+    function s2ab(s) { 
+        var buf = new ArrayBuffer(s.length); //convert s to arrayBuffer
+        var view = new Uint8Array(buf);  //create uint8array as viewer
+        for (var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF; //convert to octet
+        return buf;    
+    }
+
+    function excelSerialDateToJSDate (excelSerialDate) {
+        const daysBeforeUnixEpoch = 70 * 365 + 19;
+        const hour = 60 * 60 * 1000;
+
+        return new Date(Math.round((excelSerialDate - daysBeforeUnixEpoch) * 24 * hour) + 12 * hour);
+    };
+    function zeroCodeAddTime(date) {
+        if(date < 10){
+            date = "0"+date;
+        }
+        return date;
+    }
+    
+        </script>
+    <!-- built files will be auto injected -->
+  </body>
+</html>
